@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
             dialogBuilder.setMessage(getString(R.string.request_notification_permission, getString(R.string.app_name)))
                 .setPositiveButton("go to settings") { dialog, which ->
-                    startActivity(Intent(HelperUtil.STTINGS_NOTIFICATION_LISTENER))
+                    startActivity(Intent(HelperUtil.SETTINGS_NOTIFICATION_LISTENER))
                 }
                 .setNegativeButton("Cancel") { dialog, which ->
                     dialog.cancel()
@@ -84,9 +84,9 @@ class MainActivity : AppCompatActivity() {
         devopt_switch.isChecked = helperUtil.developerOptionsEnabled
         devopt_group.visibility = View.VISIBLE
         if (helperUtil.developerOptionsEnabled) {
-            tv_devopt_des.text = getString(R.string.dev_settings_on)
+            tv_devopt_des.text = getString(R.string.developer_options_on)
         } else {
-            tv_devopt_des.text = fromHtml(getString(R.string.dev_settings_off))
+            tv_devopt_des.text = fromHtml(getString(R.string.developer_options_off))
         }
         setUpUSBDebug()
     }

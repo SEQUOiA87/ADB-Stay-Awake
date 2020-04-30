@@ -60,7 +60,7 @@ class HelperUtil(private val applicationContext: Context?) {
     }
 
     fun setStayAwake(turnOn: Boolean): Boolean {
-        if (developerOptionsEnabled && usbDebuggingEnabled) {
+        if (developerOptionsEnabled && usbDebuggingEnabled && globallyEnabled) {
             return setInt(turnOn, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, ACandUSB, OFF)
         }
         return false
@@ -73,21 +73,13 @@ class HelperUtil(private val applicationContext: Context?) {
             offValue
         ) == offValue
 
-        var changed: Boolean = false
+        var changed = false
         try {
             if (turnOn && isOff) {
-                Settings.Global.putInt(
-                    applicationContext?.contentResolver,
-                    name,
-                    onValue
-                )
+                Settings.Global.putInt(applicationContext?.contentResolver, name, onValue)
                 changed = true
             } else if (!isOff) {
-                Settings.Global.putInt(
-                    applicationContext?.contentResolver,
-                    name,
-                    offValue
-                )
+                Settings.Global.putInt(applicationContext?.contentResolver, name, offValue)
                 changed = true
             }
         } catch (e: SecurityException) {
@@ -102,17 +94,13 @@ class HelperUtil(private val applicationContext: Context?) {
     }
 
     private fun toast(turnOn: Boolean, name: String) {
-        var text: String
+        val text: String
         if (turnOn) {
             text = "on"
         } else {
             text = "off"
         }
-        Toast.makeText(
-            applicationContext,
-            "turned $name $text.",
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast.makeText(applicationContext, "Turned $name $text.", Toast.LENGTH_SHORT).show()
     }
 
     val stayAwakeString: String
@@ -155,7 +143,10 @@ class HelperUtil(private val applicationContext: Context?) {
         }
 
     companion object {
-        val Log = com.duck.stayawakeadb.Logger()
+        var globallyEnabled: Boolean = true
+
+        val Log = Logger()
+
         const val OFF: Int = 0
         const val AC: Int = BatteryManager.BATTERY_PLUGGED_AC
         const val USB: Int = BatteryManager.BATTERY_PLUGGED_USB
@@ -169,8 +160,8 @@ class HelperUtil(private val applicationContext: Context?) {
         const val ACandUSBandWIRELESS: Int = BatteryManager.BATTERY_PLUGGED_AC +
                 BatteryManager.BATTERY_PLUGGED_USB +
                 BatteryManager.BATTERY_PLUGGED_WIRELESS
-        const val STTINGS: String = "android.settings."
-        const val STTINGS_NOTIFICATION_LISTENER: String = "${STTINGS}ACTION_NOTIFICATION_LISTENER_SETTINGS"
-        const val STTINGS_DEVELOPER: String = "${STTINGS}ACTION_APPLICATION_DEVELOPMENT_SETTINGS"
+        const val SETTINGS: String = "android.settings."
+        const val SETTINGS_NOTIFICATION_LISTENER: String = "${SETTINGS}ACTION_NOTIFICATION_LISTENER_SETTINGS"
+        const val SETTINGS_DEVELOPER: String = "${SETTINGS}ACTION_APPLICATION_DEVELOPMENT_SETTINGS"
     }
 }
